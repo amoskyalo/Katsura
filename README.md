@@ -32,10 +32,10 @@ These are the main technologies that I used. You can check the other dependencie
 4. Start the development server: npx expo start. This command will launch the Expo development server and provide you with options to run the app on an emulator, physical device, or web browser.
 
 ## Contributing
-Contributions to the Katsura App project are welcome! First, you can check all open issues and try to solve them ( there are cuple of pages which I havent finished. I have openened issues for them and you can go ahead and attempt them ). If you encounter any bugs, have suggestions for improvements, or would like to add new features, please feel free to open an issue or submit a pull request. Here is the figma file (https://www.figma.com/file/MZ6SSGBeQv9xBGeO1TGC7q/Kilimanjaro?type=design&node-id=0-1&mode=design&t=i7BLeJmSAEhmvIar-0)
+Contributions to the Katsura App project are welcome! First, you can check all open issues and try to solve them ( there are cuple of pages which I havent finished. I have openened issues for them and you can go ahead and attempt them ). If you encounter any bugs, have suggestions for improvements, or would like to add new features, please feel free to open an issue or submit a pull request. Here is the figma file https://www.figma.com/file/MZ6SSGBeQv9xBGeO1TGC7q/Kilimanjaro?type=design&node-id=0-1&mode=design&t=i7BLeJmSAEhmvIar-0
 
 ## Acknowledgements
-I want to acknowledge that Vincent for agreing to build the user interface for me. He is a talented UI/UX designer. You can get intouch with him here: vincentmouri@gmail.com
+I want to acknowledge that Vincent for agreing to build the user interface for me. He is a talented UI/UX designer. You can get intouch with him here: vinniemioru@gmail.com
 
 ## Contacts.
 If you encounter any problem, or yuo have a suggestion, please feel free to contact me amoskyalo927@gmail.com.

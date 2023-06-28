@@ -12,20 +12,24 @@ Welcome to Katsura. This is a mobile application built using React Native and Ta
 
 
 ## Feature
-1. Hey
+ 1. Browse: Users can explore a wide range of restaurants and their menus. They can filter and search for specific cuisines, dishes, or restaurants based on their preferences.
+2. Order: Users can select items from the menu, customize their order (e.g., choose toppings, specify dietary preferences), and add items to their cart. They can also view the order summary before placing it.
+3. Payment: The app supports secure payment methods, such as credit/debit cards, digital wallets, or cash on delivery. Users can securely complete their transactions within the app.
+4. Track Order: Once an order is placed, users can track the status of their order in real-time. They receive updates on the preparation, packaging, and delivery stages. Notifications keep them informed about estimated delivery times.
+5. User Profiles: Users can create and manage their profiles within the app. They can save their delivery addresses, payment details, and favorite restaurants for a personalized experience.
 
 ## Technologies
 These are the main technologies that I used. You can check the other dependencies in `package.json`.
 
-    - React Native: A popular JavaScript framework for building native mobile applications.
-    - Tailwind CSS: A utility-first CSS framework for rapidly building responsive user interfaces.
+1. React Native: A popular JavaScript framework for building native mobile applications.
+2. Tailwind CSS: A utility-first CSS framework for rapidly building responsive user interfaces.
 
 
 ## Installation
-    1. Fork the project to your github account
-    2. Clone the project to your local machine.
-    3. Navigate to your folder and run `npx expo install` 
-    4. Start the development server: npx expo start. This command will launch the Expo development server and provide you with options to run the app on an emulator, physical device, or web browser.
+1. Fork the project to your github account
+2. Clone the project to your local machine.
+3. Navigate to your folder and run `npx expo install` 
+4. Start the development server: npx expo start. This command will launch the Expo development server and provide you with options to run the app on an emulator, physical device, or web browser.
 
 ## Contributing
 Contributions to the Katsura App project are welcome! First, you can check all open issues and try to solve them ( there are cuple of pages which I havent finished. I have openened issues for them and you can go ahead and attempt them ). If you encounter any bugs, have suggestions for improvements, or would like to add new features, please feel free to open an issue or submit a pull request. Here is the figma file (https://www.figma.com/file/MZ6SSGBeQv9xBGeO1TGC7q/Kilimanjaro?type=design&node-id=0-1&mode=design&t=i7BLeJmSAEhmvIar-0)

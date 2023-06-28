@@ -12,12 +12,7 @@ Welcome to Katsura. This is a mobile application built using React Native and Ta
 
 
 ## Features
-
-    1. Browse: Users can explore a wide range of restaurants and their menus. They can filter and search for specific cuisines, dishes, or restaurants based on          their preferences.
-    2. Order: Users can select items from the menu, customize their order (e.g., choose toppings, specify dietary preferences), and add items to their cart. They       can also view the order summary before placing it.
-    3. Payment: The app supports secure payment methods, such as credit/debit cards, digital wallets, or cash on delivery. Users can securely complete their            transactions within the app.
-    4. Track Order: Once an order is placed, users can track the status of their order in real-time. They receive updates on the preparation, packaging, and            delivery stages. Notifications keep them informed about estimated delivery times.
-    5. User Profiles: Users can create and manage their profiles within the app. They can save their delivery addresses, payment details, and favorite restaurants      for a personalized experience.
+    1. Hello
 
 ## Technologies
 These are the main technologies that I used. You can check the other dependencies in `package.json`.

@@ -12,6 +12,7 @@ Welcome to Katsura. This is a mobile application built using React Native and Ta
 
 
 ## Features
+
     1. Hello
 
 ## Technologies

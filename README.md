@@ -11,9 +11,8 @@ A food delivery app built using React Native
 Welcome to Katsura. This is a mobile application built using React Native and Tailwind CSS. The app allows users to make orders for food of their choice.
 
 
-## Features
-
-    1. Hello
+## Feature
+Hey
 
 ## Technologies
 These are the main technologies that I used. You can check the other dependencies in `package.json`.

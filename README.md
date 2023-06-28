@@ -12,7 +12,7 @@ Welcome to Katsura. This is a mobile application built using React Native and Ta
 
 
 ## Feature
-    1. Hey
+    - Hey
 
 ## Technologies
 These are the main technologies that I used. You can check the other dependencies in `package.json`.

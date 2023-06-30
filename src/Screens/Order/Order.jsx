@@ -20,12 +20,18 @@ import { useState } from "react";
 import { ScrollView } from "react-native-gesture-handler";
 import RadioButtonRN from "radio-buttons-react-native";
 import Button from "../../Components/Button/Button";
+import { useDispatch } from "react-redux";
+import { addItem } from "../../Features/Cart/CartSlice";
+
 
 const Order = ({ route }) => {
   const [count, setCount] = useState(1);
   const { id } = route.params;
   const { width } = Dimensions.get("screen");
   const thisOrder = populars.find((item) => item.id === id);
+
+
+  const dispatch = useDispatch()
 
   const handleMinusCount = () => {
     if (count > 1) {
@@ -34,6 +40,17 @@ const Order = ({ route }) => {
       ToastAndroid.show("Items count cannot be 0!", ToastAndroid.SHORT)
     }
   };
+
+  const HandleCart=()=>{
+    dispatch(addItem({image:thisOrder.image,name:thisOrder.name,description:thisOrder.subText,count:count,
+      price:(thisOrder.price * count).toLocaleString("en", {
+                  style: "currency",
+                  currency: "usd",
+                })}))
+                ToastAndroid.show("Item added to cart", ToastAndroid.SHORT)
+
+  
+  }
 
   return (
     <ScrollView
@@ -72,13 +89,17 @@ const Order = ({ route }) => {
               styles.shadow,
             ]}
           >
-            <MinusIcon size={20} color="black" onPress={handleMinusCount} />
+            <TouchableOpacity  onPress={handleMinusCount}>
+            <MinusIcon size={20} color="black"  />
+            </TouchableOpacity>
             <Text className="text-2xl font-bold">{count}</Text>
+            <TouchableOpacity  onPress={() => setCount((prev)=>prev + 1)}>
             <PlusIcon
               size={20}
               color="black"
-              onPress={() => setCount(count + 1)}
+              
             />
+            </TouchableOpacity>
           </View>
         </View>
 
@@ -180,7 +201,7 @@ const Order = ({ route }) => {
             ))}
           </View>
 
-          <TouchableOpacity className="mt-8 px-6">
+          <TouchableOpacity onPress={HandleCart} className="mt-8 px-6">
             <Button title="ADD TO CART" />
           </TouchableOpacity>
         </View>

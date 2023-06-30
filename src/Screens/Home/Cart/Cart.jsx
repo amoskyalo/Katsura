@@ -4,25 +4,12 @@ import straw from "../../../../assets/Burger/beef.png";
 import pizza from "../../../../assets/Search/pizza.png";
 import CartCard from "../../../Components/CartCard/CartCard";
 import OrdersCard from "../../../Components/OrdersCard/OrdersCard";
+import { useSelector } from "react-redux";
 
 const Cart = () => {
   const [active, setActive] = useState(0);
-  const data = [
-    {
-      name: "Beef Burger",
-      description: "Beef patty and special sauce",
-      count: 2,
-      price: "$200.00",
-      image: straw,
-    },
-    {
-      name: "Pizza",
-      description: "Pizza patty and special sauce",
-      count: 1,
-      price: "$600.00",
-      image: pizza,
-    },
-  ];
+
+  const { items } = useSelector((state) => state.cart);
 
   const orders = [
     {
@@ -57,7 +44,7 @@ const Cart = () => {
 
       {active === 0 && (
         <ScrollView contentContainerStyle={{ marginTop: 24 }}>
-          {data.map((item, index) => (
+          {items.map((item, index) => (
             <CartCard key={index} data={item} />
           ))}
         </ScrollView>

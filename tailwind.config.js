@@ -5,10 +5,10 @@ module.exports = {
     extend: {
       colors: {
         primaryColor: "#0BCE83",
-        primaryDark: "#1D1D1D"
-      }
+        primaryDark: "#1D1D1D",
+        danger: "#C30E0E",
+      },
     },
   },
   plugins: [],
-}
-
+};

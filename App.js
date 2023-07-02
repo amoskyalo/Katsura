@@ -10,6 +10,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Provider } from "react-redux";
 import { persistor, store } from "./Store";
 import { PersistGate } from "redux-persist/integration/react";
+import CheckOut from "./src/Screens/CheckOut/CheckOut";
 
 export default function App() {
   const Stack = createNativeStackNavigator();
@@ -42,6 +43,11 @@ export default function App() {
               <Stack.Screen
                 component={Order}
                 name="order"
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                component={CheckOut}
+                name="checkout"
                 options={{ headerShown: false }}
               />
             </Stack.Navigator>

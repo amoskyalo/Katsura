@@ -13,13 +13,14 @@ import CartCard from "../../../Components/CartCard/CartCard";
 import OrdersCard from "../../../Components/OrdersCard/OrdersCard";
 import { useDispatch, useSelector } from "react-redux";
 import { clearCart, deleteItem } from "../../../Features/Cart/CartSlice";
+import { TrashIcon } from "react-native-heroicons/outline";
 import Button from "../../../Components/Button/Button";
 import {
   GestureHandlerRootView,
   Swipeable,
 } from "react-native-gesture-handler";
 
-const Cart = () => {
+const Cart = ({ navigation }) => {
   const [active, setActive] = useState(0);
 
   const { items } = useSelector((state) => state.cart);
@@ -37,6 +38,7 @@ const Cart = () => {
   let prevOpenedRow;
 
   const renderItem = (item, index) => {
+    // console.log(item);
     const closeRow = (index) => {
       if (prevOpenedRow && prevOpenedRow !== row[index]) {
         prevOpenedRow.close();
@@ -61,6 +63,11 @@ const Cart = () => {
               justifyContent: "center",
             }}
           >
+            <TrashIcon
+              style={{ alignSelf: "center" }}
+              size={20}
+              color="white"
+            />
             <Text className="text-white">Delete</Text>
           </View>
         </TouchableOpacity>
@@ -76,7 +83,11 @@ const Cart = () => {
           ref={(ref) => (row[index] = ref)}
           rightThreshold={10}
         >
-          <CartCard data={item} />
+          <TouchableOpacity
+            onPress={() => navigation.navigate("checkout", { item })}
+          >
+            <CartCard data={item} />
+          </TouchableOpacity>
         </Swipeable>
       </GestureHandlerRootView>
     );
@@ -126,7 +137,10 @@ const Cart = () => {
               <Text className="text-base italic">Your bag is empty.</Text>
             </View>
           ) : (
-            <ScrollView contentContainerStyle={{ marginTop: 24 }}>
+            <ScrollView
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={{ marginTop: 24 }}
+            >
               {items.map((item, index) => renderItem(item, index))}
               <TouchableOpacity onPress={ClearCart} className="mt-3 mb-[125px]">
                 <Text className="text-white bg-[#f95151] text-[16px] text-center py-3 font-semibold rounded-lg">

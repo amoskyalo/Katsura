@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   ToastAndroid,
   ActivityIndicator,
+  Pressable,
 } from "react-native";
 import { populars } from "../../_DB/DB";
 import {
@@ -24,7 +25,7 @@ import Button from "../../Components/Button/Button";
 import { useDispatch } from "react-redux";
 import { addItem } from "../../Features/Cart/CartSlice";
 
-const Order = ({ route }) => {
+const Order = ({ route, navigation }) => {
   const [count, setCount] = useState(1);
   const { id } = route.params;
   const { width } = Dimensions.get("screen");
@@ -66,10 +67,16 @@ const Order = ({ route }) => {
     }, 1000);
   };
 
-  const HandleCheckOut = () => {
-    setTitle("ADD TO CART");
+  const item = {
+    image: thisOrder.image,
+    name: thisOrder.name,
+    description: thisOrder.subText,
+    count: count,
+    price: (thisOrder.price * count).toLocaleString("en", {
+      style: "currency",
+      currency: "usd",
+    }),
   };
-
   return (
     <ScrollView
       stickyHeaderIndices={[0]}
@@ -216,7 +223,7 @@ const Order = ({ route }) => {
           </View>
 
           {title === "ADD TO CART" ? (
-            <TouchableOpacity onPress={HandleCart} className="mt-8 px-6">
+            <Pressable onPress={HandleCart} className="mt-8 px-6">
               <Button
                 title={
                   !loading ? (
@@ -226,9 +233,12 @@ const Order = ({ route }) => {
                   )
                 }
               />
-            </TouchableOpacity>
+            </Pressable>
           ) : (
-            <TouchableOpacity onPress={HandleCheckOut} className="mt-8 px-6">
+            <TouchableOpacity
+              onPress={() => navigation.navigate("checkout", { item })}
+              className="mt-8 px-6"
+            >
               <Button title="CHECKOUT" />
             </TouchableOpacity>
           )}

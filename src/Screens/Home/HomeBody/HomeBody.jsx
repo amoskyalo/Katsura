@@ -21,10 +21,8 @@ const HomeBody = () => {
   const [active, setActive] = useState(0);
 
   return (
-    <ScrollView
-      contentContainerStyle={{
-        marginTop: StatusBar.currentHeight,
-      }}
+    <View style={{flex : 1, marginTop: StatusBar.currentHeight}}>
+      <ScrollView
     >
       <View className="flex-row items-center justify-between py-8 px-6">
         <Text></Text>
@@ -70,6 +68,7 @@ const HomeBody = () => {
         ))}
       </View>
     </ScrollView>
+    </View>
   );
 };
 

@@ -38,6 +38,10 @@ const Order = ({ route, navigation }) => {
   const handleMinusCount = () => {
     if (count > 1) {
       setCount(count - 1);
+      ToastAndroid.show(
+        "Removed item from cart successfully",
+        ToastAndroid.SHORT
+      );
     } else {
       ToastAndroid.show("Items count cannot be 0!", ToastAndroid.SHORT);
     }
@@ -118,7 +122,12 @@ const Order = ({ route, navigation }) => {
               <MinusIcon size={20} color="black" />
             </TouchableOpacity>
             <Text className="text-2xl font-bold">{count}</Text>
-            <TouchableOpacity onPress={() => setCount(count + 1)}>
+            <TouchableOpacity
+              onPress={() => {
+                setCount(count + 1);
+                ToastAndroid.show("Item added successfuly!", ToastAndroid.SHORT);
+              }}
+            >
               <PlusIcon size={20} color="black" />
             </TouchableOpacity>
           </View>

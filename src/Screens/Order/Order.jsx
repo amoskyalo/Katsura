@@ -5,7 +5,9 @@ import {
   StyleSheet,
   Dimensions,
   TouchableOpacity,
-  ToastAndroid
+  ToastAndroid,
+  ActivityIndicator,
+  Pressable,
 } from "react-native";
 import { populars } from "../../_DB/DB";
 import {
@@ -23,35 +25,58 @@ import Button from "../../Components/Button/Button";
 import { useDispatch } from "react-redux";
 import { addItem } from "../../Features/Cart/CartSlice";
 
-
-const Order = ({ route }) => {
+const Order = ({ route, navigation }) => {
   const [count, setCount] = useState(1);
   const { id } = route.params;
   const { width } = Dimensions.get("screen");
   const thisOrder = populars.find((item) => item.id === id);
+  const [title, setTitle] = useState("ADD TO CART");
+  const [loading, setLoading] = useState(false);
 
-
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   const handleMinusCount = () => {
     if (count > 1) {
       setCount(count - 1);
     } else {
-      ToastAndroid.show("Items count cannot be 0!", ToastAndroid.SHORT)
+      ToastAndroid.show("Items count cannot be 0!", ToastAndroid.SHORT);
     }
   };
 
-  const HandleCart=()=>{
-    dispatch(addItem({image:thisOrder.image,name:thisOrder.name,description:thisOrder.subText,count:count,
-      price:(thisOrder.price * count).toLocaleString("en", {
-                  style: "currency",
-                  currency: "usd",
-                })}))
-                ToastAndroid.show("Item added to cart", ToastAndroid.SHORT)
+  const index = Math.random().toString();
 
-  
-  }
+  const HandleCart = () => {
+    dispatch(
+      addItem({
+        image: thisOrder.image,
+        name: thisOrder.name,
+        description: thisOrder.subText,
+        count: count,
+        price: (thisOrder.price * count).toLocaleString("en", {
+          style: "currency",
+          currency: "usd",
+        }),
+        id: index,
+      })
+    );
+    setLoading(true);
 
+    setTimeout(() => {
+      setLoading(false);
+      setTitle("CHECKOUT");
+    }, 1000);
+  };
+
+  const item = {
+    image: thisOrder.image,
+    name: thisOrder.name,
+    description: thisOrder.subText,
+    count: count,
+    price: (thisOrder.price * count).toLocaleString("en", {
+      style: "currency",
+      currency: "usd",
+    }),
+  };
   return (
     <ScrollView
       stickyHeaderIndices={[0]}
@@ -89,16 +114,12 @@ const Order = ({ route }) => {
               styles.shadow,
             ]}
           >
-            <TouchableOpacity  onPress={handleMinusCount}>
-            <MinusIcon size={20} color="black"  />
+            <TouchableOpacity onPress={handleMinusCount}>
+              <MinusIcon size={20} color="black" />
             </TouchableOpacity>
             <Text className="text-2xl font-bold">{count}</Text>
-            <TouchableOpacity  onPress={() => setCount((prev)=>prev + 1)}>
-            <PlusIcon
-              size={20}
-              color="black"
-              
-            />
+            <TouchableOpacity onPress={() => setCount(count + 1)}>
+              <PlusIcon size={20} color="black" />
             </TouchableOpacity>
           </View>
         </View>
@@ -106,7 +127,9 @@ const Order = ({ route }) => {
         <View className="mt-8">
           <View className="space-y-1 px-6">
             <View className="flex-row items-start justify-between space-x-6">
-              <Text className="font-bold text-2xl flex-1">{thisOrder.name}</Text>
+              <Text className="font-bold text-2xl flex-1">
+                {thisOrder.name}
+              </Text>
               <Text className="font-bold text-2xl">
                 {(thisOrder.price * count).toLocaleString("en", {
                   style: "currency",
@@ -193,17 +216,32 @@ const Order = ({ route }) => {
               "Allergies and contact details",
             ].map((el, i) => (
               <TouchableOpacity className="flex-row justify-between" key={i}>
-                <Text className="text-[16px] text-gray-500">
-                  {el}
-                </Text>
+                <Text className="text-[16px] text-gray-500">{el}</Text>
                 <ChevronRightIcon size={20} color="gray" />
               </TouchableOpacity>
             ))}
           </View>
 
-          <TouchableOpacity onPress={HandleCart} className="mt-8 px-6">
-            <Button title="ADD TO CART" />
-          </TouchableOpacity>
+          {title === "ADD TO CART" ? (
+            <Pressable onPress={HandleCart} className="mt-8 px-6">
+              <Button
+                title={
+                  !loading ? (
+                    "ADD TO CART"
+                  ) : (
+                    <ActivityIndicator color={"#fff"} size={25} />
+                  )
+                }
+              />
+            </Pressable>
+          ) : (
+            <TouchableOpacity
+              onPress={() => navigation.navigate("checkout", { item })}
+              className="mt-8 px-6"
+            >
+              <Button title="CHECKOUT" />
+            </TouchableOpacity>
+          )}
         </View>
       </View>
     </ScrollView>

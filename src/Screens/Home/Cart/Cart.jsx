@@ -1,15 +1,97 @@
-import { View, Text, StatusBar, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  StatusBar,
+  ScrollView,
+  TouchableOpacity,
+  ToastAndroid,
+} from "react-native";
 import React, { useState } from "react";
 import straw from "../../../../assets/Burger/beef.png";
 import pizza from "../../../../assets/Search/pizza.png";
 import CartCard from "../../../Components/CartCard/CartCard";
 import OrdersCard from "../../../Components/OrdersCard/OrdersCard";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { clearCart, deleteItem } from "../../../Features/Cart/CartSlice";
+import { TrashIcon } from "react-native-heroicons/outline";
+import Button from "../../../Components/Button/Button";
+import {
+  GestureHandlerRootView,
+  Swipeable,
+} from "react-native-gesture-handler";
 
-const Cart = () => {
+const Cart = ({ navigation }) => {
   const [active, setActive] = useState(0);
 
   const { items } = useSelector((state) => state.cart);
+
+  const dispatch = useDispatch();
+
+  const ClearCart = () => {
+    if (!items.length) {
+      ToastAndroid.show("Cart is empty!", ToastAndroid.SHORT);
+    }
+    dispatch(clearCart());
+  };
+
+  let row = [];
+  let prevOpenedRow;
+
+  const renderItem = (item, index) => {
+    // console.log(item);
+    const closeRow = (index) => {
+      if (prevOpenedRow && prevOpenedRow !== row[index]) {
+        prevOpenedRow.close();
+      }
+      prevOpenedRow = row[index];
+    };
+
+    const deleteCartItem = () => {
+      dispatch(deleteItem(item.id));
+      closeRow();
+    };
+    const renderRightActions = (progress, dragx) => {
+      return (
+        <TouchableOpacity
+          onPress={deleteCartItem}
+          className="bg-[#f95151] justify-center items-center ml-2 w-[60px] h-[82px] rounded-lg"
+        >
+          <View
+            style={{
+              margin: 0,
+              alignContent: "center",
+              justifyContent: "center",
+            }}
+          >
+            <TrashIcon
+              style={{ alignSelf: "center" }}
+              size={20}
+              color="white"
+            />
+            <Text className="text-white">Delete</Text>
+          </View>
+        </TouchableOpacity>
+      );
+    };
+    return (
+      <GestureHandlerRootView key={index}>
+        <Swipeable
+          renderRightActions={(progress, dragx) =>
+            renderRightActions(progress, dragx)
+          }
+          onSwipeableOpen={() => closeRow(index)}
+          ref={(ref) => (row[index] = ref)}
+          rightThreshold={10}
+        >
+          <TouchableOpacity
+            onPress={() => navigation.navigate("checkout", { item })}
+          >
+            <CartCard data={item} />
+          </TouchableOpacity>
+        </Swipeable>
+      </GestureHandlerRootView>
+    );
+  };
 
   const orders = [
     {
@@ -27,7 +109,13 @@ const Cart = () => {
   ];
 
   return (
-    <View style={{ marginTop: StatusBar.currentHeight, paddingHorizontal: 24 }}>
+    <View
+      style={{
+        flex: 1,
+        marginTop: StatusBar.currentHeight,
+        paddingHorizontal: 24,
+      }}
+    >
       <View className="bg-gray-200 p-2 rounded-full flex-row justify-between mt-4">
         {["Cart", "Orders"].map((item, index) => (
           <Text
@@ -43,11 +131,25 @@ const Cart = () => {
       </View>
 
       {active === 0 && (
-        <ScrollView contentContainerStyle={{ marginTop: 24 }}>
-          {items.map((item, index) => (
-            <CartCard key={index} data={item} />
-          ))}
-        </ScrollView>
+        <View>
+          {items.length === 0 ? (
+            <View className="items-center justify-center h-[85%]">
+              <Text className="text-base italic">Your bag is empty.</Text>
+            </View>
+          ) : (
+            <ScrollView
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={{ marginTop: 24 }}
+            >
+              {items.map((item, index) => renderItem(item, index))}
+              <TouchableOpacity onPress={ClearCart} className="mt-3 mb-[125px]">
+                <Text className="text-white bg-[#f95151] text-[16px] text-center py-3 font-semibold rounded-lg">
+                  CLEAR CART
+                </Text>
+              </TouchableOpacity>
+            </ScrollView>
+          )}
+        </View>
       )}
 
       {active === 1 && (

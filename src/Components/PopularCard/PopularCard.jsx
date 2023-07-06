@@ -5,9 +5,14 @@ import { useNavigation } from "@react-navigation/native";
 
 const PopularCard = ({ data }) => {
   const navigation = useNavigation();
+
+  const index = Math.random().toString();
+
   return (
     <Pressable
-      onPress={() => navigation.navigate("order", {id: data.id})}
+      onPress={() =>
+        navigation.navigate("order", { id: data.id, index: index })
+      }
       className="rounded-xl overflow-hidden mb-6"
     >
       <Image source={data.image} className="w-full h-40" />

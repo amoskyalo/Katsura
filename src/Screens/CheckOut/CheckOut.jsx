@@ -6,9 +6,8 @@ import {
   View,
   TouchableOpacity,
   Switch,
-  Pressable,
 } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { ScrollView } from "react-native-gesture-handler";
 import Button from "../../Components/Button/Button";
 import { ChevronLeftIcon } from "react-native-heroicons/outline";
@@ -19,9 +18,48 @@ import {
   AntDesign,
   FontAwesome,
 } from "react-native-vector-icons";
+import { addOrder } from "../../Features/Order/OrderSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { deleteItem } from "../../Features/Cart/CartSlice";
+import moment from "moment";
 
 const CheckOut = ({ route, navigation }) => {
   const item = route.params.item;
+
+  const dispatch = useDispatch();
+
+  const [currentDate, setCurrentDate] = useState("");
+  const [currentTime, setCurrentTime] = useState("");
+
+  useEffect(() => {
+    // var date = moment().utcOffset("+05:30").format("d/m/yyyy");
+    // setCurrentDate(date);
+    var date = new Date().getDate();
+    var month = new Date().getMonth() + 1;
+    var year = new Date().getFullYear();
+    var hours = new Date().getHours();
+    var min = new Date().getMinutes();
+
+    setCurrentDate(date + "/" + month + "/" + year + " ");
+    setCurrentTime(hours + ":" + min);
+  }, []);
+
+  const HandleOrder = () => {
+    dispatch(
+      addOrder({
+        image: item.image,
+        name: item.name,
+        description: item.description,
+        price: item.price,
+        count: item.count,
+        id: item.id,
+        date: currentDate,
+        time: currentTime,
+      })
+    );
+    dispatch(deleteItem(item.id));
+    navigation.navigate("ordersuccess");
+  };
   return (
     <View
       style={{
@@ -153,9 +191,9 @@ const CheckOut = ({ route, navigation }) => {
               {item.price}
             </Text>
           </View>
-          <Pressable className="my-3">
+          <TouchableOpacity onPress={HandleOrder} className="my-3">
             <Button title="PLACE ORDER" />
-          </Pressable>
+          </TouchableOpacity>
         </View>
       </ScrollView>
     </View>

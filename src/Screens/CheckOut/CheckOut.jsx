@@ -1,12 +1,13 @@
 import {
   Image,
   StatusBar,
+  StyleSheet,
   Text,
   View,
   TouchableOpacity,
   Switch,
 } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { ScrollView } from "react-native-gesture-handler";
 import Button from "../../Components/Button/Button";
 import { ChevronLeftIcon } from "react-native-heroicons/outline";
@@ -17,9 +18,48 @@ import {
   AntDesign,
   FontAwesome,
 } from "react-native-vector-icons";
+import { addOrder } from "../../Features/Order/OrderSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { deleteItem } from "../../Features/Cart/CartSlice";
+import moment from "moment";
 
 const CheckOut = ({ route, navigation }) => {
   const item = route.params.item;
+
+  const dispatch = useDispatch();
+
+  const [currentDate, setCurrentDate] = useState("");
+  const [currentTime, setCurrentTime] = useState("");
+
+  useEffect(() => {
+    // var date = moment().utcOffset("+05:30").format("d/m/yyyy");
+    // setCurrentDate(date);
+    var date = new Date().getDate();
+    var month = new Date().getMonth() + 1;
+    var year = new Date().getFullYear();
+    var hours = new Date().getHours();
+    var min = new Date().getMinutes();
+
+    setCurrentDate(date + "/" + month + "/" + year + " ");
+    setCurrentTime(hours + ":" + min);
+  }, []);
+
+  const HandleOrder = () => {
+    dispatch(
+      addOrder({
+        image: item.image,
+        name: item.name,
+        description: item.description,
+        price: item.price,
+        count: item.count,
+        id: item.id,
+        date: currentDate,
+        time: currentTime,
+      })
+    );
+    dispatch(deleteItem(item.id));
+    navigation.navigate("ordersuccess");
+  };
   return (
     <View
       style={{
@@ -49,45 +89,77 @@ const CheckOut = ({ route, navigation }) => {
             </View>
           </View>
 
-          <View className="space-y-10 mt-5">
-            {userDetailsInfo.map((info, i) => (
-              <Card heading={info.name} key={i}>
-                <View className="space-y-4 mt-6">
-                  {info.details.map((det, i) => (
-                    <FlexDisplay key={i}>
-                      <FlexDisplay key={i}>
-                        <View className="flex-row gap-5">
-                          <det.icon
-                            name={det.iconName}
-                            size={20}
-                            color="black"
-                          />
-                          {typeof det.text === "string" && (
-                            <TouchableOpacity>
-                              <Text>{det.text}</Text>
-                            </TouchableOpacity>
-                          )}
-                          {typeof det.text !== "string" && (
-                            <View className="space-y-3">
-                              {convertObjectKeysToArray(det.text).map(
-                                (el, i) => (
-                                  <Text key={i}>{det.text[`${el}`]}</Text>
-                                )
-                              )}
-                            </View>
-                          )}
-                        </View>
-                        {i === 0 && typeof det.text === "string" && (
-                          <AntDesign name="check" size={22} color="black" />
-                        )}
-                      </FlexDisplay>
-                    </FlexDisplay>
-                  ))}
-                </View>
-              </Card>
-            ))}
+          <View className="flex flex-row justify-between items-center px-2 mt-6">
+            <Text className="text-black text-lg font-bold">Payment method</Text>
+            <TouchableOpacity>
+              <Text className="text-purple-700 font-semibold">CHANGE</Text>
+            </TouchableOpacity>
           </View>
-
+          <View className="gap-4 my-1 px-3">
+            <View className="flex-row justify-between items-center">
+              <View className="flex-row gap-5">
+                <Feather name="credit-card" size={20} color="black" />
+                <Text>**** **** **** 4747</Text>
+              </View>
+              <AntDesign name="check" size={22} color="black" />
+            </View>
+            <View className="flex-row ">
+              <FontAwesome name="money" size={20} color="black" />
+              <Text className="pl-6">Pay on delivery</Text>
+            </View>
+            <View className="flex-row ">
+              <AntDesign name="apple1" size={20} color="black" />
+              <Text className="pl-6">**** 7348</Text>
+            </View>
+          </View>
+          <View className="flex flex-row justify-between items-center px-2 mt-6">
+            <Text className="text-black text-lg font-bold">
+              Deliver address
+            </Text>
+            <TouchableOpacity>
+              <Text className="text-purple-700 font-semibold">CHANGE</Text>
+            </TouchableOpacity>
+          </View>
+          <View className="flex-row gap-2 px-1">
+            <Feather
+              style={{ paddingLeft: 10, paddingTop: 8 }}
+              name="home"
+              size={20}
+              color="black"
+            />
+            <View className="gap-2  px-2">
+              <Text>John Doe</Text>
+              <Text>Cesu31k-25.st, S/A Chili</Text>
+              <Text>Desert Dew</Text>
+              <Text>LV-1012</Text>
+              <Text>Latvia</Text>
+            </View>
+          </View>
+          <View className="flex flex-row justify-between items-center px-2 mt-6">
+            <Text className="text-black text-lg font-bold">
+              Delivery options
+            </Text>
+            <TouchableOpacity>
+              <Text className="text-purple-700 font-semibold">CHANGE</Text>
+            </TouchableOpacity>
+          </View>
+          <View className="gap-4 my-1 px-3">
+            <View className="flex-row ">
+              <MaterialIcons name="directions-walk" size={20} color="black" />
+              <Text className="pl-6">I'll pick it up myself</Text>
+            </View>
+            <View className="flex-row justify-between items-center">
+              <View className="flex-row ">
+                <MaterialIcons name="directions-bike" size={20} color="black" />
+                <Text className="pl-6">By courier</Text>
+              </View>
+              <AntDesign name="check" size={22} color="black" />
+            </View>
+            <View className="flex-row ">
+              <MaterialCommunityIcons name="drone" size={20} color="black" />
+              <Text className="pl-6">By Drone</Text>
+            </View>
+          </View>
           <View className="flex flex-row justify-between items-center px-2 mt-6">
             <Text className="text-black text-lg font-bold">
               Non-contact-delivery
@@ -96,7 +168,7 @@ const CheckOut = ({ route, navigation }) => {
           </View>
         </View>
 
-        <View className="bg-white rounded-t-[50px] px-6 space-y-3">
+        <View className="bg-white rounded-t-[50px] px-8 gap-3">
           <View className="items-center">
             <View className="border-t-[4px] w-14 border-t-gray-200" />
           </View>
@@ -129,3 +201,5 @@ const CheckOut = ({ route, navigation }) => {
 };
 
 export default CheckOut;
+
+const styles = StyleSheet.create({});

@@ -125,7 +125,6 @@ const Order = ({ route, navigation }) => {
             <TouchableOpacity
               onPress={() => {
                 setCount(count + 1);
-                ToastAndroid.show("Item added successfuly!", ToastAndroid.SHORT);
               }}
             >
               <PlusIcon size={20} color="black" />

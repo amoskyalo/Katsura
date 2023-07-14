@@ -28,7 +28,6 @@ import { addItem } from "../../Features/Cart/CartSlice";
 const Order = ({ route, navigation }) => {
   const [count, setCount] = useState(1);
   const { id } = route.params;
-  const { index } = route.params;
   const { width } = Dimensions.get("screen");
   const thisOrder = populars.find((item) => item.id === id);
   const [title, setTitle] = useState("ADD TO CART");
@@ -39,14 +38,12 @@ const Order = ({ route, navigation }) => {
   const handleMinusCount = () => {
     if (count > 1) {
       setCount(count - 1);
-      ToastAndroid.show(
-        "Removed item from cart successfully",
-        ToastAndroid.SHORT
-      );
     } else {
       ToastAndroid.show("Items count cannot be 0!", ToastAndroid.SHORT);
     }
   };
+
+  const index = Math.random().toString();
 
   const HandleCart = () => {
     dispatch(

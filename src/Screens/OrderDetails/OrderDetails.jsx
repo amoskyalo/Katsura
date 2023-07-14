@@ -8,11 +8,15 @@ import {
 } from "react-native";
 import React from "react";
 import { ScrollView } from "react-native-gesture-handler";
-import { ChevronLeftIcon } from "react-native-heroicons/outline";
-import { Feather } from "react-native-vector-icons";
+import {
+  ChevronLeftIcon,
+  TagIcon,
+  UserCircleIcon,
+} from "react-native-heroicons/outline";
 
 const OrderDetails = ({ route, navigation }) => {
   const item = route.params.item;
+  const index = item.id * 1000;
   return (
     <View
       style={{
@@ -27,7 +31,7 @@ const OrderDetails = ({ route, navigation }) => {
               <ChevronLeftIcon color="black" size={24} />
             </TouchableOpacity>
             <View className="flex-row justify-center w-[93%] items-center">
-              <Text className="text-xl font-bold">Order #119FF</Text>
+              <Text className="text-xl font-bold">Order #{index}FF</Text>
             </View>
           </View>
           <Image
@@ -44,11 +48,11 @@ const OrderDetails = ({ route, navigation }) => {
             <Text className="text-base">Lemonade</Text>
             <Text className="text-base">{item.count} Item(s)</Text>
             <View className="flex-row pt-3">
-              <Feather name="credit-card" size={20} color="black" />
+              <TagIcon size={20} color="black" />
               <Text className="ml-5">Total : {item.price}</Text>
             </View>
             <View className="flex-row pt-3 mb-6">
-              <Feather name="credit-card" size={20} color="black" />
+              <UserCircleIcon size={20} color="black" />
               <Text className="ml-5">Delivered by Peter Ozenua</Text>
             </View>
             <Text className="text-primaryColor text-[16px] text-center py-3 mb-5 font-semibold border border-gray-300 rounded-lg">

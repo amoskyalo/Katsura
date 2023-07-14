@@ -13,6 +13,7 @@ import { persistor, store } from "./Store";
 import { PersistGate } from "redux-persist/integration/react";
 import OrderSuccess from "./src/Screens/OrderSuccess/OrderSuccess";
 import OrderDetails from "./src/Screens/OrderDetails/OrderDetails";
+import CreditCardDetails from "./src/Screens/CreditCard/CreditCardDetails";
 
 export default function App() {
   const Stack = createNativeStackNavigator();
@@ -60,6 +61,11 @@ export default function App() {
               <Stack.Screen
                 component={OrderDetails}
                 name="orderdetails"
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                component={CreditCardDetails}
+                name="creditcard"
                 options={{ headerShown: false }}
               />
             </Stack.Navigator>

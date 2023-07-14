@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Switch,
   Pressable,
+  ToastAndroid,
 } from "react-native";
 import {
   Feather,
@@ -22,41 +23,87 @@ import FlexDisplay from "../../Components/FlexDisplay/FlexDisplay";
 import { useDispatch } from "react-redux";
 import { addOrder } from "../../Features/Order/OrderSlice";
 import { deleteItem } from "../../Features/Cart/CartSlice";
+import moment from "moment/moment";
+import { PaymentIcon } from "../../../assets/PaymentIcons";
+import {
+  Amex,
+  Maestro,
+  Mastercard,
+  Paypal,
+  Visa,
+} from "../../../assets/PaymentIcons/components";
+import { checkCreditCard } from "../../Components/CreditCard/ValidateCard";
 
 const CheckOut = ({ route, navigation }) => {
   const item = route.params.item;
-
+  const data = route.params.items;
   const dispatch = useDispatch();
 
   const [currentDate, setCurrentDate] = useState("");
   const [currentTime, setCurrentTime] = useState("");
 
   useEffect(() => {
-    var date = new Date().getDate();
-    var month = new Date().getMonth() + 1;
-    var year = new Date().getFullYear();
-    var hours = new Date().getHours();
-    var min = new Date().getMinutes();
+    var date = moment().utcOffset("").format(" DD/MMM/YYYY");
+    var time = moment().utcOffset("").format(" HH:mm");
 
-    setCurrentDate(date + "/" + month + "/" + year + " ");
-    setCurrentTime(hours + ":" + min);
+    setCurrentDate(date);
+    setCurrentTime(time);
   }, []);
 
   const HandleOrder = () => {
-    dispatch(
-      addOrder({
-        image: item.image,
-        name: item.name,
-        description: item.description,
-        price: item.price,
-        count: item.count,
-        id: item.id,
-        date: currentDate,
-        time: currentTime,
-      })
-    );
-    dispatch(deleteItem(item.id));
-    navigation.navigate("ordersuccess");
+    if (!data) {
+      ToastAndroid.show(
+        "Please provide some payment method.",
+        ToastAndroid.SHORT
+      );
+    } else {
+      dispatch(
+        addOrder({
+          image: item.image,
+          name: item.name,
+          description: item.description,
+          price: item.price,
+          count: item.count,
+          id: item.id,
+          date: currentDate,
+          time: currentTime,
+        })
+      );
+      dispatch(deleteItem(item.id));
+      navigation.navigate("ordersuccess");
+    }
+  };
+
+  var cardNum = data ? data.cardNumber : "None";
+  var replaced = data ? cardNum.replace(/.(?=.{5,}$)/g, "*") : cardNum;
+
+  const [iconName, setIconName] = useState(<Paypal />);
+
+  useEffect(() => {
+    checkCard(cardNum);
+  }, [cardNum]);
+
+  const checkCard = (cardNum) => {
+    const { type } = checkCreditCard(cardNum);
+    if (type === null) {
+      setIconName();
+    } else if (type === "MasterCard") {
+      setIconName(<Mastercard />);
+    } else if (type === "AmEx") {
+      setIconName(<Amex />);
+    } else if (type === "Visa") {
+      setIconName(<Visa />);
+    } else if (type === "Discover") {
+      setIconName(<Discover />);
+    } else if (type === "VisaElectron") {
+      setIconName();
+    } else if (type === "Maestro") {
+      setIconName(<Maestro />);
+    } else if (type === "Solo") {
+      setIconName();
+    } else {
+      setIconName();
+    }
   };
 
   const userDetailsInfo = [
@@ -64,19 +111,19 @@ const CheckOut = ({ route, navigation }) => {
       name: "Payment method",
       details: [
         {
-          text: "**** **** **** 4747",
+          text: replaced,
           icon: Feather,
-          iconName: "credit-card",
+          iconName: data ? null : "credit-card",
         },
         {
-          text: "Pay on delivery",
+          text: data ? "Pay on delivery" : "None",
           icon: FontAwesome,
           iconName: "money",
         },
         {
-          text: "**** 7348",
-          icon: AntDesign,
-          iconName: "apple1",
+          text: data ? "Credit Card" : "None",
+          icon: Feather,
+          iconName: "credit-card",
         },
       ],
     },
@@ -123,7 +170,20 @@ const CheckOut = ({ route, navigation }) => {
         <FlexDisplay>
           <Text className="text-black text-lg font-bold">{heading}</Text>
           <TouchableOpacity>
-            <Text className="text-purple-700 font-semibold">CHANGE</Text>
+            <Text
+              onPress={() =>
+                heading == "Payment method"
+                  ? navigation.navigate("creditcard", { item })
+                  : null
+              }
+              className="text-purple-700 font-semibold"
+            >
+              {heading == "Payment method"
+                ? data
+                  ? "CHANGE"
+                  : "ADD"
+                : "CHANGE"}
+            </Text>
           </TouchableOpacity>
         </FlexDisplay>
         {children}
@@ -175,7 +235,14 @@ const CheckOut = ({ route, navigation }) => {
                   {info.details.map((det, i) => (
                     <FlexDisplay key={i}>
                       <FlexDisplay key={i}>
-                        <View className="flex-row gap-5">
+                        <View
+                          className={
+                            det.iconName === null
+                              ? "flex-row gap-[10px]"
+                              : "flex-row gap-5"
+                          }
+                        >
+                          {det.iconName === null ? iconName : null}
                           <det.icon
                             name={det.iconName}
                             size={20}
@@ -196,9 +263,13 @@ const CheckOut = ({ route, navigation }) => {
                             </View>
                           )}
                         </View>
-                        {i === 0 && typeof det.text === "string" && (
-                          <AntDesign name="check" size={22} color="black" />
-                        )}
+                        {data ? (
+                          <>
+                            {i === 0 && typeof det.text === "string" && (
+                              <AntDesign name="check" size={22} color="black" />
+                            )}
+                          </>
+                        ) : null}
                       </FlexDisplay>
                     </FlexDisplay>
                   ))}

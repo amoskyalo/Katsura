@@ -39,7 +39,6 @@ const Profile = () => {
     },
   ];
 
-
   return (
     <View
       style={{
@@ -64,7 +63,7 @@ const Profile = () => {
       <View className="mt-8">
         {data.map((item, index) => (
           <View className="flex-row items-center mb-8" key={index}>
-            <item.icon color="black" size={24}/>
+            <item.icon color="black" size={24} />
             <Text className="ml-4 font-semibold text-[18px]">{item.name}</Text>
           </View>
         ))}

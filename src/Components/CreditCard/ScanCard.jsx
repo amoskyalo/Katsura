@@ -8,7 +8,7 @@ import { Linking } from "react-native";
 import { fontPixel } from "./Normalize";
 import { ToastAndroid } from "react-native";
 
-function ScanCard({ onSubmit }) {
+function ScanCard() {
   const [useCamera, setUseCamera] = useState(false);
   const pickImageAsync = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({

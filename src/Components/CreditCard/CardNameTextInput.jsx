@@ -22,7 +22,7 @@ const CardNameTextInput = ({
     ? focusColor
     : defaultBorderColor;
   return (
-    <View className="w-full justify-start mb-5">
+    <View className="w-full justify-start">
       <Text className="text-[#555] capitalize ml-2">{label}</Text>
       <View
         style={{ borderColor: validationColor }}

@@ -16,7 +16,7 @@ import {
 
 const OrderDetails = ({ route, navigation }) => {
   const item = route.params.item;
-  const index = item.id * 1000;
+  const index = Math.round(item.id * 1000);
   return (
     <View
       style={{
@@ -69,5 +69,3 @@ const OrderDetails = ({ route, navigation }) => {
 };
 
 export default OrderDetails;
-
-const styles = StyleSheet.create({});

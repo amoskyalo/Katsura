@@ -4,6 +4,7 @@ import {
   AdjustmentsHorizontalIcon,
 } from "react-native-heroicons/solid";
 import SearchFilters from "./SearchFilters/SearchFilters";
+import Search_Filter from "./SearchFilters/Search_Filter";
 import { useState } from "react";
 
 import chicken from "../../../../assets/Search/chicken.png";
@@ -21,9 +22,40 @@ import japanese from "../../../../assets/Search/japaneese.png";
 import sandwich from "../../../../assets/Search/sandwich.png";
 
 import SearchResultCard from "./SearchResultCard/SearchResultCard";
+import { TouchableOpacity } from "react-native";
+import { populars } from "../../../_DB/DB";
+import PopularCard from "../../../Components/PopularCard/PopularCard";
+import { MaterialIcons } from "react-native-vector-icons";
+import { fontPixel } from "../../../Components/CreditCard/Normalize";
+import { useRoute } from "@react-navigation/native";
 
 const Search = () => {
+  const route = useRoute();
+  const filters = route.params?.food;
   const [active, setActive] = useState(0);
+  const [openModal, setOPenModal] = useState(false);
+  const [text, setText] = useState();
+  const [food, setFood] = useState();
+
+  const searchFood = (value) => {
+    const filteredFood = populars.filter((item) =>
+      item.name.toLowerCase().includes(value.toLowerCase())
+    );
+
+    if (filteredFood.length) {
+      setFood(filteredFood);
+    } else {
+      setFood("");
+    }
+  };
+  const enteredValue = (value) => {
+    setText(value);
+    searchFood(value);
+  };
+
+  const clearSearch = () => {
+    setText("");
+  };
 
   const data = [
     {
@@ -108,7 +140,11 @@ const Search = () => {
   ];
 
   return (
-    <ScrollView stickyHeaderIndices={[1]}>
+    <ScrollView
+      className="flex-1"
+      showsVerticalScrollIndicator={false}
+      stickyHeaderIndices={[1]}
+    >
       <View className="bg-primaryDark">
         <View className="px-6 mt-10">
           <Text className="text-white text-xl font-semibold mb-2">Search</Text>
@@ -117,11 +153,22 @@ const Search = () => {
             <TextInput
               className="flex-1 py-3 pl-4"
               placeholder="Search for food"
+              onChangeText={enteredValue}
+              value={text}
             />
-            <AdjustmentsHorizontalIcon color="#0BCE83" size={20} />
+            {!text ? (
+              <TouchableOpacity onPress={() => setOPenModal((prev) => !prev)}>
+                <AdjustmentsHorizontalIcon color="#0BCE83" size={20} />
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity onPress={clearSearch}>
+                <MaterialIcons name="clear" size={19} color={"#888"} />
+              </TouchableOpacity>
+            )}
           </View>
         </View>
       </View>
+      {openModal && <Search_Filter onPress={() => setOPenModal(false)} />}
 
       <View className="bg-primaryDark pt-8">
         <ScrollView
@@ -146,44 +193,86 @@ const Search = () => {
         </ScrollView>
       </View>
 
-      <View className="mt-8">
-        <Text className="px-6 font-bold text-xl">Your search history</Text>
-        <ScrollView
-          horizontal={true}
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{
-            paddingHorizontal: 24,
-            marginTop: 8,
-            gap: 16,
-          }}
-        >
-          {data.map((item, index) => (
-            <SearchResultCard data={item} key={index} width={150} />
-          ))}
-        </ScrollView>
-      </View>
-
-      <View className="px-6">
-        <Text className="font-bold text-xl">Top categories</Text>
-        <View className="flex-row flex-wrap justify-between flex-1 w-full mt-2">
-          {categories.map((item, index) => (
-            <View
-              className="w-[48%] rounded-lg overflow-hidden relative mb-4"
-              key={index}
-            >
-              <Image className="h-28 w-full" source={item.image} />
-              <View
-                style={{ backgroundColor: "rgba(0, 0, 0, .5)" }}
-                className="absolute flex-row items-center justify-center left-0 w-full h-full flex-1 p-2"
-              >
-                <Text className="text-white font-bold text-lg text-center">
-                  {item.name}
+      {!text ? (
+        <>
+          {!filters ? (
+            <>
+              <View className="mt-8">
+                <Text className="px-6 font-bold text-xl">
+                  Your search history
                 </Text>
+                <ScrollView
+                  horizontal={true}
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={{
+                    paddingHorizontal: 24,
+                    marginTop: 8,
+                    gap: 16,
+                  }}
+                >
+                  {data.map((item, index) => (
+                    <SearchResultCard data={item} key={index} width={150} />
+                  ))}
+                </ScrollView>
               </View>
+
+              <View className="px-6">
+                <Text className="font-bold text-xl">Top categories</Text>
+                <View className="flex-row flex-wrap justify-between flex-1 w-full mt-2">
+                  {categories.map((item, index) => (
+                    <View
+                      className="w-[48%] rounded-lg overflow-hidden relative mb-4"
+                      key={index}
+                    >
+                      <Image className="h-28 w-full" source={item.image} />
+                      <View
+                        style={{ backgroundColor: "rgba(0, 0, 0, .5)" }}
+                        className="absolute flex-row items-center justify-center left-0 w-full h-full flex-1 p-2"
+                      >
+                        <Text className="text-white font-bold text-lg text-center">
+                          {item.name}
+                        </Text>
+                      </View>
+                    </View>
+                  ))}
+                </View>
+              </View>
+            </>
+          ) : (
+            <>
+              {filters.length === 0 ? (
+                <View className="flex-1 justify-center items-center">
+                  <Text className="mt-48" style={{ fontSize: fontPixel(19) }}>
+                    Not available at the moment.
+                  </Text>
+                </View>
+              ) : (
+                <View className="mt-8 px-6 pb-8">
+                  {filters.map((item, index) => (
+                    <PopularCard data={item} key={index} />
+                  ))}
+                </View>
+              )}
+            </>
+          )}
+        </>
+      ) : (
+        <>
+          {food.length === 0 ? (
+            <View className="flex-1 justify-center items-center">
+              <Text className="mt-48" style={{ fontSize: fontPixel(19) }}>
+                Not available at the moment.
+              </Text>
             </View>
-          ))}
-        </View>
-      </View>
+          ) : (
+            <View className="mt-8 px-6 pb-8">
+              {food.map((item, index) => (
+                <PopularCard data={item} key={index} />
+              ))}
+            </View>
+          )}
+        </>
+      )}
     </ScrollView>
   );
 };

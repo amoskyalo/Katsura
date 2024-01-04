@@ -5,9 +5,10 @@ import { useNavigation } from "@react-navigation/native";
 
 const PopularCard = ({ data }) => {
   const navigation = useNavigation();
+
   return (
     <Pressable
-      onPress={() => navigation.navigate("order", {id: data.id})}
+      onPress={() => navigation.navigate("order", { id: data.id })}
       className="rounded-xl overflow-hidden mb-6"
     >
       <Image source={data.image} className="w-full h-40" />
@@ -21,9 +22,13 @@ const PopularCard = ({ data }) => {
         <View>
           <View className="flex-row items-center space-x-3">
             <StarIcon color="#0BCE83" size={18} />
-            <Text className="text-sm text-gray-600 font-[500]">4.8</Text>
+            <Text className="text-sm text-gray-600 font-[500]">
+              {data.rating}
+            </Text>
           </View>
-          <Text className="text-sm text-gray-600 font-[500]">10mins</Text>
+          <Text className="text-sm text-gray-600 font-[500]">
+            {data.delivery_time}
+          </Text>
         </View>
       </View>
     </Pressable>

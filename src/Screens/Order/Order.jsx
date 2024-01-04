@@ -38,10 +38,6 @@ const Order = ({ route, navigation }) => {
   const handleMinusCount = () => {
     if (count > 1) {
       setCount(count - 1);
-      ToastAndroid.show(
-        "Removed item from cart successfully",
-        ToastAndroid.SHORT
-      );
     } else {
       ToastAndroid.show("Items count cannot be 0!", ToastAndroid.SHORT);
     }
@@ -80,6 +76,7 @@ const Order = ({ route, navigation }) => {
       style: "currency",
       currency: "usd",
     }),
+    id: index,
   };
   return (
     <ScrollView
@@ -125,7 +122,6 @@ const Order = ({ route, navigation }) => {
             <TouchableOpacity
               onPress={() => {
                 setCount(count + 1);
-                ToastAndroid.show("Item added successfuly!", ToastAndroid.SHORT);
               }}
             >
               <PlusIcon size={20} color="black" />

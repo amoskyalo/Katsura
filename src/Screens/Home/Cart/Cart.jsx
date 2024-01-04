@@ -19,11 +19,15 @@ import {
   GestureHandlerRootView,
   Swipeable,
 } from "react-native-gesture-handler";
+import Animated from "react-native-reanimated";
+import { clearOrder, deleteOrder } from "../../../Features/Order/OrderSlice";
 
 const Cart = ({ navigation }) => {
   const [active, setActive] = useState(0);
 
   const { items } = useSelector((state) => state.cart);
+
+  const { orders } = useSelector((state) => state.order);
 
   const dispatch = useDispatch();
 
@@ -33,12 +37,25 @@ const Cart = ({ navigation }) => {
     }
     dispatch(clearCart());
   };
+  const ClearOrders = () => {
+    if (!orders.length) {
+      ToastAndroid.show("You have no order!", ToastAndroid.SHORT);
+    }
+    dispatch(clearOrder());
+  };
 
   let row = [];
   let prevOpenedRow;
 
   const renderItem = (item, index) => {
-    // console.log(item);
+    const ViewDetails = () => {
+      if (active === 0) {
+        navigation.navigate("checkout", { item });
+      } else {
+        navigation.navigate("orderdetails", { item });
+      }
+    };
+
     const closeRow = (index) => {
       if (prevOpenedRow && prevOpenedRow !== row[index]) {
         prevOpenedRow.close();
@@ -47,14 +64,28 @@ const Cart = ({ navigation }) => {
     };
 
     const deleteCartItem = () => {
-      dispatch(deleteItem(item.id));
-      closeRow();
+      if (active === 0) {
+        dispatch(deleteItem(item.id));
+        closeRow();
+      } else {
+        dispatch(deleteOrder(item.id));
+        closeRow();
+      }
     };
-    const renderRightActions = (progress, dragx) => {
+    const renderRightActions = (progress, dragX) => {
+      // const scale = dragX.interpolate({
+      //   inputRange: [-100, 0],
+      //   outputRange: [1, 0],
+      //   // extrapolate: "clamp",
+      // });
+
+      // const Styte = {
+      //   transform: [{ scale }],
+      // };
       return (
         <TouchableOpacity
           onPress={deleteCartItem}
-          className="bg-[#f95151] justify-center items-center ml-2 w-[60px] h-[82px] rounded-lg"
+          className="bg-[#f95151] justify-center items-center ml-2 w-[60px] h-[83px] rounded-xl"
         >
           <View
             style={{
@@ -68,7 +99,7 @@ const Cart = ({ navigation }) => {
               size={20}
               color="white"
             />
-            <Text className="text-white">Delete</Text>
+            <Animated.Text className="text-white">Delete</Animated.Text>
           </View>
         </TouchableOpacity>
       );
@@ -76,37 +107,24 @@ const Cart = ({ navigation }) => {
     return (
       <GestureHandlerRootView key={index}>
         <Swipeable
-          renderRightActions={(progress, dragx) =>
-            renderRightActions(progress, dragx)
+          renderRightActions={(progress, dragX) =>
+            renderRightActions(progress, dragX)
           }
           onSwipeableOpen={() => closeRow(index)}
           ref={(ref) => (row[index] = ref)}
-          rightThreshold={10}
+          rightThreshold
         >
-          <TouchableOpacity
-            onPress={() => navigation.navigate("checkout", { item })}
-          >
-            <CartCard data={item} />
+          <TouchableOpacity onPress={ViewDetails}>
+            {active == 0 ? (
+              <CartCard data={item} />
+            ) : (
+              <OrdersCard key={index} data={item} />
+            )}
           </TouchableOpacity>
         </Swipeable>
       </GestureHandlerRootView>
     );
   };
-
-  const orders = [
-    {
-      name: "Beef Burger",
-      description: "Beef patty and special sauce",
-      image: straw,
-      date: "2 March 2023",
-    },
-    {
-      name: "Pizza",
-      description: "Pizza patty and special sauce",
-      date: "3rd May 2023",
-      image: pizza,
-    },
-  ];
 
   return (
     <View
@@ -151,13 +169,29 @@ const Cart = ({ navigation }) => {
           )}
         </View>
       )}
-
       {active === 1 && (
-        <ScrollView contentContainerStyle={{ marginTop: 24 }}>
-          {orders.map((item, index) => (
-            <OrdersCard key={index} data={item} />
-          ))}
-        </ScrollView>
+        <View>
+          {orders.length === 0 ? (
+            <View className="items-center justify-center h-[85%]">
+              <Text className="text-base italic">You have no order.</Text>
+            </View>
+          ) : (
+            <ScrollView
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={{ marginTop: 24 }}
+            >
+              {orders.map((item, index) => renderItem(item, index))}
+              <TouchableOpacity
+                onPress={ClearOrders}
+                className="mt-3 mb-[125px]"
+              >
+                <Text className="text-white bg-[#f95151] text-[16px] text-center py-3 font-semibold rounded-lg">
+                  CLEAR ORDERS
+                </Text>
+              </TouchableOpacity>
+            </ScrollView>
+          )}
+        </View>
       )}
     </View>
   );
